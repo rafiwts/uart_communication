@@ -1,13 +1,13 @@
 import argparse
 import logging
 import os
-import random
 import time
 
+import numpy as np
 import serial
 
 # Configure logs
-log_file = "logs/device.log"
+log_file = "../logs/device.log"
 
 logging.basicConfig(
     filename=log_file,
@@ -28,19 +28,24 @@ while True:
         command = ser.readline().decode().strip()
         logging.info(f"Received: {command}")
 
-        if command == "START":
+        if command == "$0":
             streaming = True
+            start_response = "$0, 200\n"
+            ser.write(start_response.encode())
             logging.info("Started sending data...")
-        elif command == "STOP":
+        elif command == "$1":
+            stop_response = "$0, 200\n"
+            ser.write(stop_response.encode())
             streaming = False
             logging.info("Stopped sending data.")
 
     if streaming:
-        data = [random.randint(0, 1000) for _ in range(3)]
+        # they have to be floats with one digit after comma
+        data = np.float16(np.random.uniform(0.0, 1000.0, size=3))
         data_str = f"${data[0]},{data[1]},{data[2]}\n"
 
         ser.write(data_str.encode())
         logging.info(f"Sent data: {data_str.strip()}")
 
         # TODO: Frequency options to check
-        time.sleep(3)
+        time.sleep(1.0 / 256)
