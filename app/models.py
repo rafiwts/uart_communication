@@ -11,3 +11,12 @@ class SensorData(Base):
     temperature = Column(Float, nullable=False)
     velocity = Column(Float, nullable=False)
     timestamp = Column(Float, nullable=False)
+
+    def __str__(self):
+        return (
+            f"SensorData(id={self.id}, "
+            f"pressure={self.pressure}, "
+            f"temperature={self.temperature}, "
+            f"velocity={self.velocity}, "
+            f"timestamp={self.timestamp})"
+        )
