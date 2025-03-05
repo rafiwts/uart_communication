@@ -1,16 +1,10 @@
 import logging
 from datetime import datetime
 
-<<<<<<< HEAD
 from fastapi import HTTPException
 from sqlalchemy import func
 
 from app.models import DeviceConfig, SensorData
-
-=======
-from app.models import SensorData
-
->>>>>>> cdb364f8cc41d64350879ce56412e8346e559112
 
 
 def handle_sensor_parameters(db, response):
@@ -61,7 +55,6 @@ def handle_config_response(response):
             logging.error(f"Received: {response}")
     else:
         logging.warning("No response received from the device.")
-<<<<<<< HEAD
 
 
 def handle_device_metadata(db):
@@ -146,5 +139,3 @@ def handle_latest_messages(limit, db):
     ]
 
     return {"messages": messages_response}
-=======
->>>>>>> cdb364f8cc41d64350879ce56412e8346e559112

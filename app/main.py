@@ -9,11 +9,6 @@ from sqlalchemy.orm import Session
 
 from app.database import engine, get_db
 from app.handlers import (
-    HEAD,
-    <<<<<<<,
-    =======,
-    >>>>>>>,
-    cdb364f8cc41d64350879ce56412e8346e559112,
     handle_config_response,
     handle_device_metadata,
     handle_latest_messages,
@@ -99,11 +94,7 @@ async def start_streaming(db: Session = Depends(get_db)):
         return {"message": "Data streaming started"}
 
     # TODO: Handle it when you start while streaming
-<<<<<<< HEAD
     raise HTTPException(status_code=400, detail="Data streaming already started")
-=======
-    return {"message": "Already streaming"}
->>>>>>> cdb364f8cc41d64350879ce56412e8346e559112
 
 
 @app.get("/stop")
@@ -116,7 +107,6 @@ async def stop_streaming():
 
         return {"message": "Data streaming stopped"}
 
-<<<<<<< HEAD
     raise HTTPException(status_code=400, detail="Data streaming already stopped")
 
 
@@ -132,10 +122,6 @@ async def get_messages(limit: int, db: Session = Depends(get_db)):
     latest_messages = handle_latest_messages(limit, db)
 
     return latest_messages
-=======
-    # TODO: Handle it when you stop while not streaming
-    return {"message": "Data streaming already stopped"}
->>>>>>> cdb364f8cc41d64350879ce56412e8346e559112
 
 
 @app.post("/config")
