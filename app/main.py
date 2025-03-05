@@ -2,19 +2,24 @@ import argparse
 import asyncio
 import logging
 import os
-from datetime import datetime
 
 import serial
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import engine, get_db
-from app.models import Base, SensorData
+from app.handlers import (
+    handle_config_response,
+    handle_device_metadata,
+    handle_latest_messages,
+    handle_sensor_parameters,
+    is_valid_sensor_data,
+)
+from app.models import Base
 
-# start app
 app = FastAPI()
 
-# Argument parser for CLI commands and environment variables
+# parsing arguments from CLI or environment variables
 parser = argparse.ArgumentParser(description="FastAPI UART Server")
 parser.add_argument(
     "--host", type=str, default=os.getenv("HOST", "localhost"), help="Host address"
@@ -25,12 +30,10 @@ parser.add_argument(
 parser.add_argument(
     "--device", type=str, default=os.getenv("PORT", "/tmp/virtual_uart1")
 )
-# FIXME: Fix argument parsing
-# parser.add_argument("--baudrate", type=int, default=os.getenv("BAUDRATE", 115000))
 
 args = parser.parse_args()
 
-# Configure logs
+# configure log file
 log_file = "logs/client.log"
 
 logging.basicConfig(
@@ -57,36 +60,21 @@ async def read_serial_data(db: Session):
 
             # if response is empty
             if not response:
-                logging.info("Skipping empty response")
+                logging.warning("Skipping empty timout response")
+                continue
 
-            if response.startswith("$"):
-                logging.info(f"Device response: {response}")
-                parameters = list(map(float, response[1:].split(",")))
-                if len(parameters) == 3:
-                    pressure = parameters[0]
-                    temperature = parameters[1]
-                    velocity = parameters[2]
-                    timestamp = datetime.now().timestamp()
+            # if this is validated stream data
+            if is_valid_sensor_data(response):
+                handle_sensor_parameters(db, response)
+                logging.info(f"Received: {response}")
+                continue
 
-                    # Add the record to the database
-                    SensorData.add_record(
-                        db,
-                        pressure=pressure,
-                        temperature=temperature,
-                        velocity=velocity,
-                        timestamp=timestamp,
-                    )
+            # other responses
+            if response.startswith(("$0", "$1")):
+                logging.info(response)
+                continue
 
-                    logging.info(
-                        f"Saved to database: {pressure}, "
-                        f"{temperature}, "
-                        f"{velocity}, "
-                        f"{timestamp}"
-                    )
-                    # TODO: handle exception if the response has different values
-                else:
-                    logging.info("Skipping device's response to command...")
-                    continue
+            handle_config_response(response)
 
         except Exception as e:
             logging.error(f"Error: {e}")
@@ -98,7 +86,7 @@ async def start_streaming(db: Session = Depends(get_db)):
     if not streaming:
         streaming = True
         ser.write(b"$0\n")
-        logging.info("Sent START to device")
+        logging.info("Sent: START")
 
         # create a coroutine for serial reading and add to database
         asyncio.create_task(read_serial_data(db))
@@ -106,8 +94,7 @@ async def start_streaming(db: Session = Depends(get_db)):
         return {"message": "Data streaming started"}
 
     # TODO: Handle it when you start while streaming
-    logging.warning("Attempted to start while already streaming.")
-    return {"message": "Already streaming"}
+    raise HTTPException(status_code=400, detail="Data streaming already started")
 
 
 @app.get("/stop")
@@ -116,21 +103,46 @@ async def stop_streaming():
     if streaming:
         streaming = False
         ser.write(b"$1\n")
-        logging.info("Sent STOP to device")
+        logging.info("Sent: STOP")
 
         return {"message": "Data streaming stopped"}
 
-    # TODO: Handle it when you stop while not streaming
-    logging.warning("Attempted to stop while not streaming.")
-    return {"message": "Data streaming already stopped"}
+    raise HTTPException(status_code=400, detail="Data streaming already stopped")
+
+
+@app.get("/device")
+async def get_device_metadata(db: Session = Depends(get_db)):
+    device_metadata = handle_device_metadata(db)
+
+    return device_metadata
+
+
+@app.get("/messages")
+async def get_messages(limit: int, db: Session = Depends(get_db)):
+    latest_messages = handle_latest_messages(limit, db)
+
+    return latest_messages
 
 
 @app.post("/config")
-async def configure_device(frequency: int, debug_mode: bool):
-    message = f"$2,{frequency},{int(debug_mode)}"
+async def configure_device(
+    frequency: int, debug_mode: bool, db: Session = Depends(get_db)
+):
+    message = f"$2,{frequency},{debug_mode}"
     ser.write(message.encode())
+    logging.info(f"Sent: {message.strip()}")
 
-    logging.info(f"Sent update config to device with: {message.strip()}")
+    # wait for response so it is not empty
+    await asyncio.sleep(1)
+
+    # handle response if not streaming separately
+    if not streaming:
+        response = await asyncio.to_thread(ser.readline)
+        response = response.decode().strip()
+
+        handle_config_response(response)
+
+    return {"message": "Configuration command sent, and response processed."}
 
 
 if __name__ == "__main__":

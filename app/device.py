@@ -38,11 +38,11 @@ while True:
 
         if command == "$0":
             streaming = True
-            start_response = "$0,ok\n"
+            start_response = f"{command},ok\n"
             ser.write(start_response.encode())
             logging.info("Started sending data...")
         elif command == "$1":
-            stop_response = "$0,ok\n"
+            stop_response = f"{command},ok\n"
             ser.write(stop_response.encode())
             streaming = False
             logging.info("Stopped sending data.")
@@ -50,14 +50,11 @@ while True:
             _, freq_str, debug_str = command.split(",")
 
             new_frequency = int(freq_str)
-            new_debug_mode = debug_str == "1"
+            new_debug_mode = debug_str == "True"
 
             if new_frequency <= 0 or new_frequency > 255:
-                invalid_input = f"$[{new_frequency},invalid command\n]"
-                logging.warning(
-                    f"Invalid frequency received: {new_frequency}. "
-                    "Sending invalid command response."
-                )
+                invalid_input = f"$2,{new_frequency},invalid command\n"
+                logging.error(f"Invalid frequency received: {new_frequency}. ")
                 ser.write(invalid_input.encode())
             else:
                 DeviceConfig.udpdate_config(
@@ -67,20 +64,15 @@ while True:
                 frequency = new_frequency
                 debug_mode = new_debug_mode
 
-                success_response = "$2,ok\n"
+                success_response = f"$2,{new_frequency},{new_debug_mode},ok\n"
                 ser.write(success_response.encode())
-                logging.info(
-                    f"Updated device config: frequency={new_frequency}, "
-                    f"debug_mode={new_debug_mode}"
-                )
 
     if streaming:
         # they have to be floats with one digit after comma
         data = np.float16(np.random.uniform(0.0, 1000.0, size=3))
         data_str = f"${data[0]},{data[1]},{data[2]}\n"
 
+        logging.info(f"Sent:{data_str}")
         ser.write(data_str.encode())
-        logging.info(f"Sent data: {data_str.strip()}")
 
-        # TODO: Frequency options to check
         time.sleep(1.0 / frequency)
