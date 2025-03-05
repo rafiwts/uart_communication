@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 
 from app.database import engine, get_db
 from app.models import Base, SensorData
-from app.schema import SensorDataSchema
 
 # start app
 app = FastAPI()
@@ -64,24 +63,25 @@ async def read_serial_data(db: Session):
                 logging.info(f"Device response: {response}")
                 parameters = list(map(float, response[1:].split(",")))
                 if len(parameters) == 3:
-                    sensor_data = SensorDataSchema(
-                        pressure=parameters[0],
-                        temperature=parameters[1],
-                        velocity=parameters[2],
-                        # rounded to two digits
-                        timestamp=round(datetime.now().timestamp(), 2),
+                    pressure = parameters[0]
+                    temperature = parameters[1]
+                    velocity = parameters[2]
+                    timestamp = datetime.now().timestamp()
+
+                    # Add the record to the database
+                    SensorData.add_record(
+                        db,
+                        pressure=pressure,
+                        temperature=temperature,
+                        velocity=velocity,
+                        timestamp=timestamp,
                     )
 
-                    data = SensorData(**sensor_data.model_dump())
-
-                    db.add(data)
-                    db.commit()
-
                     logging.info(
-                        f"Saved to database: {data.pressure}, "
-                        f"{data.temperature}, "
-                        f"{data.velocity}, "
-                        f"{data.timestamp}"
+                        f"Saved to database: {pressure}, "
+                        f"{temperature}, "
+                        f"{velocity}, "
+                        f"{timestamp}"
                     )
                     # TODO: handle exception if the response has different values
                 else:
@@ -123,6 +123,14 @@ async def stop_streaming():
     # TODO: Handle it when you stop while not streaming
     logging.warning("Attempted to stop while not streaming.")
     return {"message": "Data streaming already stopped"}
+
+
+@app.post("/config")
+async def configure_device(frequency: int, debug_mode: bool):
+    message = f"$2,{frequency},{int(debug_mode)}"
+    ser.write(message.encode())
+
+    logging.info(f"Sent update config to device with: {message.strip()}")
 
 
 if __name__ == "__main__":

@@ -6,8 +6,11 @@ import time
 import numpy as np
 import serial
 
+from app.database import get_db
+from app.models import DeviceConfig
+
 # Configure logs
-log_file = "../logs/device.log"
+log_file = "logs/device.log"
 
 logging.basicConfig(
     filename=log_file,
@@ -21,7 +24,12 @@ args = parser.parse_args()
 
 ser = serial.Serial(args.port, baudrate=115200, timeout=1)
 
+# global variables
 streaming = False
+frequency, debug_mode = None, None
+
+db = next(get_db())
+frequency, debug_mode = DeviceConfig.get_config(db)
 
 while True:
     if ser.in_waiting > 0:
@@ -30,14 +38,41 @@ while True:
 
         if command == "$0":
             streaming = True
-            start_response = "$0, 200\n"
+            start_response = "$0,ok\n"
             ser.write(start_response.encode())
             logging.info("Started sending data...")
         elif command == "$1":
-            stop_response = "$0, 200\n"
+            stop_response = "$0,ok\n"
             ser.write(stop_response.encode())
             streaming = False
             logging.info("Stopped sending data.")
+        elif command.startswith("$2"):
+            _, freq_str, debug_str = command.split(",")
+
+            new_frequency = int(freq_str)
+            new_debug_mode = debug_str == "1"
+
+            if new_frequency <= 0 or new_frequency > 255:
+                invalid_input = f"$[{new_frequency},invalid command\n]"
+                logging.warning(
+                    f"Invalid frequency received: {new_frequency}. "
+                    "Sending invalid command response."
+                )
+                ser.write(invalid_input.encode())
+            else:
+                DeviceConfig.udpdate_config(
+                    db, frequency=new_frequency, debug_mode=new_debug_mode
+                )
+
+                frequency = new_frequency
+                debug_mode = new_debug_mode
+
+                success_response = "$2,ok\n"
+                ser.write(success_response.encode())
+                logging.info(
+                    f"Updated device config: frequency={new_frequency}, "
+                    f"debug_mode={new_debug_mode}"
+                )
 
     if streaming:
         # they have to be floats with one digit after comma
@@ -48,4 +83,4 @@ while True:
         logging.info(f"Sent data: {data_str.strip()}")
 
         # TODO: Frequency options to check
-        time.sleep(1.0 / 256)
+        time.sleep(1.0 / frequency)
