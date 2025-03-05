@@ -46,7 +46,7 @@ logging.basicConfig(
 Base.metadata.create_all(bind=engine)
 
 # create a serial device
-ser = serial.Serial(args.device, baudrate=115200, timeout=1)
+ser = serial.Serial(args.device, baudrate=115200, timeout=2)
 streaming = False
 
 

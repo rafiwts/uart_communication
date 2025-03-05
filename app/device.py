@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser(description="Embedded Device")
 parser.add_argument("--port", type=str, default=os.getenv("PORT", "/tmp/virtual_uart2"))
 args = parser.parse_args()
 
-ser = serial.Serial(args.port, baudrate=115200, timeout=1)
+ser = serial.Serial(args.port, baudrate=115200, timeout=2)
 
 # global variables
 streaming = False
@@ -72,7 +72,6 @@ while True:
         data = np.float16(np.random.uniform(0.0, 1000.0, size=3))
         data_str = f"${data[0]},{data[1]},{data[2]}\n"
 
-        logging.info(f"Sent:{data_str}")
         ser.write(data_str.encode())
 
         time.sleep(1.0 / frequency)
