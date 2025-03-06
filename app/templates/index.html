@@ -7,18 +7,38 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Control device sensors</h1>
-    <div class="streaming-div">
-        <button class="stop-btn">Stop Streaming</button>
-        <button class="start-btn">Start Streaming</button>
-        <div class="config-info">
-            <p>Frequency: <span class="frequency">-</span></p>
-            <p>Debug Mode: <span class="debug-mode">-</span></p>
+    <div class="control-container">
+        <h1>Control device sensors</h1>
+        <div class="streaming-container">
+            <button class="stop-btn">Stop Streaming</button>
+            <div>
+                <button class="start-btn">Start Streaming</button>
+                <div class="streaming-indicator">
+                    Streaming<span class="dots"></span>
+                </div>
+            </div>
+            <div class="config-info">
+                <p>Frequency: <span class="frequency">-</span> Hz</p>
+                <p>Debug Mode: <span class="debug-mode">-</span></p>
+            </div>
         </div>
     </div>
-    <div class="streaming-indicator">
-        Streaming<span class="dots"></span>
+
+    <div class="config-details">
+        <h1>Update Device Configuration</h1>
+        <form class="config-form">
+            <div class="form-group">
+                <label for="frequency">Frequency:</label>
+                <input type="number" id="frequency" name="frequency" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="debugMode">Debug Mode:</label>
+                <input type="checkbox" id="debugMode" name="debugMode" class="form-checkbox">
+            </div>
+            <button type="submit" class="btn btn-submit">Update Configuration</button>
+        </form>
     </div>
+
     <script src="/static/scripts/main.js"></script>
 </body>
 </html>

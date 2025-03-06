@@ -1,25 +1,32 @@
 body {
-    color: white;
+    color: rgb(0, 0, 0);
     text-align: center;
     background-color: #080808;
 }
 
 h1 {
-    color: #dbdbdb;
+    color: #000000;
 }
 
 .start-btn,
 .stop-btn {
-    padding: 10px 20px;
+    padding: 20px 0px 20px 0px;
     margin: 10px;
-    background-color: #a22121;
+    background-color: rgb(159, 6, 6);
+    width: 300px;
     color: white;
     border: black;
     cursor: pointer;
+    border-radius: 4px;
 }
 
 .start-btn {
-    background-color: rgb(74, 83, 151);
+    background-color: rgb(74, 151, 80);
+}
+
+.stop-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .stop-btn:hover {
@@ -28,8 +35,8 @@ h1 {
 }
 
 .start-btn:hover {
-    background-color: rgb(168, 164, 191);
-    color: rgb(38, 40, 132);
+    background-color: rgb(164, 191, 169);
+    color: rgb(38, 132, 46);
 }
 
 .start-btn.streaming {
@@ -47,7 +54,7 @@ h1 {
     }
 }
 
-.streaming-div {
+.streaming-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,7 +63,8 @@ h1 {
 
 .config-info {
     font-size: 16px;
-    margin-left: 20px;
+    margin-left: 10px;
+    font: bold;
 }
 
 .streaming-indicator {
@@ -67,7 +75,7 @@ h1 {
 
 .frequency,
 .debug-mode {
-    color: white;
+    color: rgb(0, 0, 0);
     font: bold;
 }
 
@@ -82,4 +90,83 @@ h1 {
     33% { content: "."; }
     66% { content: ".."; }
     100% { content: "..."; }
+}
+
+.config-details,
+.control-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.config-details {
+    align-items: left;
+    width: 300px;
+}
+
+.config-details h1 {
+    color: #333;
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-input {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-checkbox {
+    margin-top: 5px;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.config-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

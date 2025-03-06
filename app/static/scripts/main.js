@@ -37,7 +37,10 @@ function checkStreamingStatus() {
 }
 
 // add this function when page loads so the state is remembered
-document.addEventListener("DOMContentLoaded", checkStreamingStatus);
+document.addEventListener("DOMContentLoaded", function() {
+    checkStreamingStatus();
+    fetchConfigInfo();
+});
 
 // start and stop streaming
 const startBtn = document.querySelector(".start-btn");
@@ -81,4 +84,35 @@ stopBtn.addEventListener("click", function () {
             console.error("Error starting streaming:", error);
         });
 
+});
+
+// post new device configuration parameterss
+document.querySelector(".config-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const frequency = document.getElementById("frequency").value;
+    const debug_mode = document.getElementById("debugMode").checked;
+
+    // create a request parameters from form
+    const requestData = {
+        frequency: parseInt(frequency),
+        debug_mode: debug_mode
+    };
+
+    fetch("/config", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(function(response) {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return response.json().then(function(error) {
+                throw new Error(error.detail || "Error updating config");
+            });
+        }
+    })
 });
