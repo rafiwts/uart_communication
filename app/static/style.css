@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #d1d1d1;
+}
+
+h1 {
+    color: #333;
+}
+
+.start-btn,
+.stop-btn {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #a22121;
+    color: white;
+    border: black;
+    cursor: pointer;
+}
+
+.start-btn {
+    background-color: rgb(74, 151, 74);
+}
+
+.stop-btn:hover {
+    background-color: #bfa0a0;
+    color: rgb(155, 32, 32);
+}
+
+.start-btn:hover {
+    background-color: rgb(164, 191, 164);
+    color: rgb(38, 132, 38);
+}
