@@ -1,11 +1,11 @@
 body {
-    font-family: Arial, sans-serif;
+    color: white;
     text-align: center;
-    background-color: #d1d1d1;
+    background-color: #080808;
 }
 
 h1 {
-    color: #333;
+    color: #dbdbdb;
 }
 
 .start-btn,
@@ -50,6 +50,7 @@ h1 {
 .streaming-div {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 20px;
 }
 
@@ -59,10 +60,15 @@ h1 {
 }
 
 .streaming-indicator {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 15px;
     color: green;
-    display: none; /* Hidden by default */
+    display: none;
+}
+
+.frequency,
+.debug-mode {
+    color: white;
+    font: bold;
 }
 
 .dots::after {
