@@ -5,7 +5,11 @@ import os
 
 import serial
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from starlette.requests import Request
 
 from app.database import engine, get_db
 from app.handlers import (
@@ -16,8 +20,13 @@ from app.handlers import (
     is_valid_sensor_data,
 )
 from app.models import Base
+from app.schemas import ConfigUpdateRequest
 
 app = FastAPI()
+
+# add templates and static files
+templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # parsing arguments from CLI or environment variables
 parser = argparse.ArgumentParser(description="FastAPI UART Server")
@@ -48,6 +57,12 @@ Base.metadata.create_all(bind=engine)
 # create a serial device
 ser = serial.Serial(args.device, baudrate=115200, timeout=2)
 streaming = False
+
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    # Render the 'index.html' template and pass some context data
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 async def read_serial_data(db: Session):
@@ -125,9 +140,10 @@ async def get_messages(limit: int, db: Session = Depends(get_db)):
 
 
 @app.post("/config")
-async def configure_device(
-    frequency: int, debug_mode: bool, db: Session = Depends(get_db)
-):
+async def configure_device(config: ConfigUpdateRequest, db: Session = Depends(get_db)):
+    frequency = config.frequency
+    debug_mode = config.debug_mode
+
     message = f"$2,{frequency},{debug_mode}"
     ser.write(message.encode())
     logging.info(f"Sent: {message.strip()}")
