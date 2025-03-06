@@ -8,16 +8,35 @@ h1 {
     color: #000000;
 }
 
+.main-container {
+    margin: 100px;
+}
+
+.config-details,
+.control-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.control-container {
+    padding: 50px;
+    margin-bottom: 40px;
+}
+
 .start-btn,
 .stop-btn {
-    padding: 20px 0px 20px 0px;
-    margin: 10px;
+    display: block;
+    padding: 20px 0px;
+    margin: 10px auto;
     background-color: rgb(159, 6, 6);
     width: 300px;
     color: white;
     border: black;
     cursor: pointer;
     border-radius: 4px;
+    font-size: 1em;
 }
 
 .start-btn {
@@ -90,15 +109,6 @@ h1 {
     33% { content: "."; }
     66% { content: ".."; }
     100% { content: "..."; }
-}
-
-.config-details,
-.control-container {
-    margin: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .config-details {
