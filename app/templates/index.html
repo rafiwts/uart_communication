@@ -8,10 +8,17 @@
 </head>
 <body>
     <h1>Control device sensors</h1>
-    <button class="start-btn">Start Streaming</button>
-    <button class="stop-btn">Stop Streaming</button>
-    <div class="streaming-indicator" style="display:none;color:green;">Streaming...</div>
-
+    <div class="streaminig-div">
+        <button class="start-btn">Start Streaming</button>
+        <button class="stop-btn">Stop Streaming</button>
+        <div class="streaming-indicator">
+            Streaming<span class="dots"></span>
+        </div>
+        <div class="config-info">
+            <p>Frequency: <span class="frequency">-</span></p>
+            <p>Debug Mode: <span class="debug-mode">-</span></p>
+        </div>
+    </div>
     <script src="/static/scripts/main.js"></script>
 </body>
 </html>

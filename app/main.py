@@ -139,6 +139,13 @@ async def get_messages(limit: int, db: Session = Depends(get_db)):
     return latest_messages
 
 
+# additional endpoint for js streaming handling
+@app.get("/status")
+async def get_status():
+    global streaming
+    return {"streaming": streaming}
+
+
 @app.post("/config")
 async def configure_device(config: ConfigUpdateRequest, db: Session = Depends(get_db)):
     frequency = config.frequency
