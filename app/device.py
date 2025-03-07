@@ -53,9 +53,7 @@ while True:
             new_debug_mode = debug_str == "True"
 
             if new_frequency <= 0 or new_frequency > 255:
-                invalid_input = f"$2,{new_frequency},invalid command\n"
-                logging.error(f"Invalid frequency received: {new_frequency}. ")
-                ser.write(invalid_input.encode())
+                response = f"$2,{new_frequency},invalid command\n"
             else:
                 DeviceConfig.udpdate_config(
                     db, frequency=new_frequency, debug_mode=new_debug_mode
@@ -64,8 +62,9 @@ while True:
                 frequency = new_frequency
                 debug_mode = new_debug_mode
 
-                success_response = f"$2,{new_frequency},{new_debug_mode},ok\n"
-                ser.write(success_response.encode())
+                response = f"$2,{new_frequency},{new_debug_mode},ok\n"
+
+            ser.write(response.encode())
 
     if streaming:
         # they have to be floats with one digit after comma
