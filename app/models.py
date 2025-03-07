@@ -70,7 +70,7 @@ class DeviceConfig(Base):
         return config.frequency, config.debug_mode
 
     @classmethod
-    def udpdate_config(cls, db: Session, frequency, debug_mode):
+    def update_config(cls, db: Session, frequency, debug_mode):
         config = db.query(cls).first()
         if config:
             config.frequency = frequency
