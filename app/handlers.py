@@ -50,9 +50,9 @@ def handle_config_response(response):
         if response.startswith("$2") and "ok" in response:
             logging.info(f"Received: {response}")
         elif response.startswith("$2") and "invalid" in response:
-            logging.error(f"Received: {response}")
+            raise HTTPException(status_code=400, detail="Invalid data")
         else:
-            logging.error(f"Received: {response}")
+            raise HTTPException(status_code=400, detail="Invalid data")
     else:
         logging.warning("No response received from the device.")
 

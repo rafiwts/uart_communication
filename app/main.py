@@ -165,7 +165,7 @@ async def configure_device(config: ConfigUpdateRequest, db: Session = Depends(ge
 
         handle_config_response(response)
 
-    return {"message": "Configuration command sent, and response processed."}
+    return {"detail": "ok"}
 
 
 if __name__ == "__main__":
