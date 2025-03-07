@@ -12,8 +12,15 @@ h1 {
     margin: 100px;
 }
 
-.config-details,
-.control-container {
+.data-display-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.config-container,
+.control-container,
+.latest-data-container,
+.data-container {
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
@@ -111,12 +118,7 @@ h1 {
     100% { content: "..."; }
 }
 
-.config-details {
-    align-items: left;
-    width: 300px;
-}
-
-.config-details h1 {
+.config-container h1 {
     color: #333;
     text-align: center;
     font-size: 1.5em;
@@ -175,8 +177,10 @@ h1 {
     cursor: not-allowed;
 }
 
-.config-details {
+.config-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: left;
+    width: 300px;
 }

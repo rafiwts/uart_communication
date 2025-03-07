@@ -87,6 +87,7 @@ stopBtn.addEventListener("click", function () {
 });
 
 // post new device configuration parameterss
+// if streaming values do not update
 document.querySelector(".config-form").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -106,13 +107,38 @@ document.querySelector(".config-form").addEventListener("submit", function(event
         },
         body: JSON.stringify(requestData)
     })
-    .then(function(response) {
-        if (response.ok) {
-            return response.json();
-        } else {
-            return response.json().then(function(error) {
-                throw new Error(error.detail || "Error updating config");
-            });
-        }
+    .then(response => response.json())
+    .then(data => {
+        setTimeout(() => {
+            location.reload();
+        }, 2000); // workaround for now
     })
+    .catch(error => {
+        console.error("Error updating config:", error);
+        alert("Error updating config");
+    });
 });
+
+// fetch new data every 2 seconds
+async function fetchSensorData() {
+    try {
+        const response = await fetch("/messages?limit=10");
+        const data = await response.json();
+
+        const dataList = document.querySelector(".data-list");
+        dataList.innerHTML = ''; // Clear previous data
+
+        // Loop through the messages and display them in the list
+        data.messages.forEach((message) => {
+            const li = document.createElement("li");
+            li.textContent = `Pressure: ${message.pressure}, Temp: ${message.temperature}, Velocity: ${message.velocity}`;
+            dataList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error fetching sensor data:", error);
+    }
+}
+
+setInterval(fetchSensorData, 2000);
+
+fetchSensorData();

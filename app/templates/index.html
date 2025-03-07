@@ -22,20 +22,28 @@
                 </div>
             </div>
         </div>
-
-        <div class="config-details">
-            <h1>Update Device Configuration</h1>
-            <form class="config-form">
-                <div class="form-group">
-                    <label for="frequency">Frequency:</label>
-                    <input type="number" id="frequency" name="frequency" required class="form-input">
-                </div>
-                <div class="form-group">
-                    <label for="debugMode">Debug Mode:</label>
-                    <input type="checkbox" id="debugMode" name="debugMode" class="form-checkbox">
-                </div>
-                <button type="submit" class="btn btn-submit">Update Configuration</button>
-            </form>
+        <div class="data-display-container">
+            <div class="config-container">
+                <h1>Update Device Configuration</h1>
+                <form class="config-form">
+                    <div class="form-group">
+                        <label for="frequency">Frequency:</label>
+                        <input type="number" id="frequency" name="frequency" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="debugMode">Debug Mode:</label>
+                        <input type="checkbox" id="debugMode" name="debugMode" class="form-checkbox">
+                    </div>
+                    <button type="submit" class="btn btn-submit">Update Configuration</button>
+                </form>
+            </div>
+            <div class="latest-data-container">
+                <h2>Latest Sensor Data</h2>
+                <ul class="data-list"></ul>
+            </div>
+            <div class="data-container">
+                <h2>Data</h2>
+            </div>
         </div>
     </div>
 
