@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Metadata</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="logo-container">
+            <img src="/static/images/clone.jpf" alt="Clone Robotics" width="100" height="100">
+            <h1>CLONE ROBOTICS</h1>
+        </div>
+        <div class="display-container">
+            <h1>Device Metadata</h1>
+            <pre>{{ data | tojson(indent=2) }}</pre>
+        </div>
+    </div>
+</body>
+</html>

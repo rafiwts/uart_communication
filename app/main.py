@@ -132,11 +132,25 @@ async def get_device_metadata(db: Session = Depends(get_db)):
     return device_metadata
 
 
+@app.get("/device-display")
+async def display_device_metadata(request: Request, db: Session = Depends(get_db)):
+    device_metadata = handle_device_metadata(db)
+
+    return templates.TemplateResponse(
+        "device-metadata.html", {"request": request, "data": device_metadata}
+    )
+
+
 @app.get("/messages")
 async def get_messages(limit: int, db: Session = Depends(get_db)):
     latest_messages = handle_latest_messages(limit, db)
 
     return latest_messages
+
+
+@app.get("/messages-display")
+async def display_messages(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse("latest-messages.html", {"request": request})
 
 
 # additional endpoint for js streaming handling

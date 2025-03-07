@@ -7,7 +7,6 @@ function fetchConfigInfo() {
         .then(response => response.json())
         .then(data => {
             console.log("Data rerfieved:", data)
-            console.log(data.curr_config.frequency)
             frequencyDisplay.textContent = data.curr_config.frequency;
             debugModeDisplay.textContent = data.curr_config.debug ? "ON" : "OFF";
         })
@@ -122,13 +121,12 @@ document.querySelector(".config-form").addEventListener("submit", function(event
 // fetch new data every 2 seconds
 async function fetchSensorData() {
     try {
-        const response = await fetch("/messages?limit=10");
+        const response = await fetch("/messages?limit=6");
         const data = await response.json();
 
         const dataList = document.querySelector(".data-list");
-        dataList.innerHTML = ''; // Clear previous data
+        dataList.innerHTML = '';
 
-        // Loop through the messages and display them in the list
         data.messages.forEach((message) => {
             const li = document.createElement("li");
             li.textContent = `Pressure: ${message.pressure}, Temp: ${message.temperature}, Velocity: ${message.velocity}`;
@@ -142,3 +140,13 @@ async function fetchSensorData() {
 setInterval(fetchSensorData, 2000);
 
 fetchSensorData();
+
+// handle metadata and latest messages buttons
+// new tab will be opened with json data
+document.querySelector(".metadata-btn").addEventListener("click", function() {
+    window.open("/device-display", "_blank");
+});
+
+document.querySelector(".latest-messages-btn").addEventListener("click", function() {
+    window.open("/messages-display", "_blank");
+});
