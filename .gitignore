@@ -7,8 +7,8 @@ env
 # logs
 logs
 
-# database
-app/database.db
+# databases
+*.db
 
 # cache
 __pycache__

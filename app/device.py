@@ -60,11 +60,6 @@ def handle_update_config(command: str):
         # bool is handled by fastapi, frequency by device
         response = f"{UPDATE_CONFIG_CMD},{new_frequency},invalid command\n"
     else:
-        db = next(get_db())
-        DeviceConfig.update_config(
-            db, frequency=new_frequency, debug_mode=new_debug_mode
-        )
-
         frequency = new_frequency
         debug_mode = new_debug_mode
 
