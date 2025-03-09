@@ -100,7 +100,7 @@ document.querySelector(".config-form").addEventListener("submit", function(event
     };
 
     fetch("/config", {
-        method: "POST",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json"
         },
