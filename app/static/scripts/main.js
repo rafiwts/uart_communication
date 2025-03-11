@@ -124,6 +124,13 @@ async function fetchSensorData() {
         const response = await fetch("/messages?limit=6");
         const data = await response.json();
 
+        console.log(data)
+           // Check if data.messages exists and is a non-empty array
+        if (!data || !Array.isArray(data.messages) || data.messages.length === 0) {
+            console.log("No messages available, skipping update.");
+            return; // Exit early if no valid messages
+        }
+
         const dataList = document.querySelector(".data-list");
         dataList.innerHTML = '';
 
