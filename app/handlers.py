@@ -59,13 +59,11 @@ def handle_config_response(response):
 
 
 def handle_device_metadata(db):
-    # get current device config
     device_config = db.query(DeviceConfig).first()
 
     if not device_config:
         raise HTTPException(status_code=400, detail="No device configuration found")
 
-    # get 10 last records from sensor data
     latest_data = (
         db.query(
             func.avg(SensorData.pressure).label("avg_pressure"),
@@ -77,15 +75,14 @@ def handle_device_metadata(db):
         .all()
     )
 
-    if latest_data and all(value is None for value in latest_data[0]):
-        raise HTTPException(
-            status_code=400, detail="No sensor data records have been found"
+    avg_pressure, avg_temperature, avg_velocity = None, None, None
+    latest_record = None
+
+    if latest_data and not all(value is None for value in latest_data[0]):
+        avg_pressure, avg_temperature, avg_velocity = latest_data[0]
+        latest_record = (
+            db.query(SensorData).order_by(SensorData.timestamp.desc()).first()
         )
-
-    avg_pressure, avg_temperature, avg_velocity = latest_data[0]
-
-    # fetch latest record
-    latest_record = db.query(SensorData).order_by(SensorData.timestamp.desc()).first()
 
     return {
         "debug": device_config.debug_mode,
@@ -107,27 +104,15 @@ def handle_device_metadata(db):
 
 
 def handle_latest_messages(limit, db):
-    count_messages = db.query(SensorData).count()
-
     if limit <= 0:
         raise HTTPException(status_code=400, detail="The limit number must be positive")
-    elif limit > count_messages:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                f"Data base has less that {limit} records "
-                f"Current value: {count_messages}"
-            ),
-        )
 
     latest_messages = (
         db.query(SensorData).order_by(SensorData.timestamp.desc()).limit(limit).all()
     )
 
     if not latest_messages:
-        raise HTTPException(
-            status_code=400, detail="No sensor data records have been found"
-        )
+        return {"messages": latest_messages}
 
     messages_response = [
         {

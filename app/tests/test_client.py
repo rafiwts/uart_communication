@@ -88,7 +88,17 @@ def test_device_metadata_no_messages(test_client, device_config):
     response = test_client.get("/device")
     data = response.json()
 
-    assert data["detail"] == "No sensor data records have been found"
+    assert data["debug"] == device_config.debug_mode
+    assert data["curr_config"]["frequency"] == device_config.frequency
+    assert data["curr_config"]["debug"] == device_config.debug_mode
+
+    assert data["latest"]["pressure"] == None  # noqa: E711
+    assert data["latest"]["temperature"] == None  # noqa: E711
+    assert data["latest"]["velocity"] == None  # noqa: E711
+
+    assert data["mean_last_10"]["pressure"] == None  # noqa: E711
+    assert data["mean_last_10"]["temperature"] == None  # noqa: E711
+    assert data["mean_last_10"]["velocity"] == None  # noqa: E711
 
 
 @pytest.mark.parametrize("limit", [(2), (4), (6), (8)])
@@ -121,18 +131,12 @@ def test_message_limit_response_below_zero(test_client, limit):
 
 
 @pytest.mark.parametrize("limit", [(12), (22), (32), (100)])
-def test_message_limit_response_invalid_limit(test_client, limit, sensor_data_records):
-    # invalid limit occurs when there are less messages than limit itself
-    # fixture takes 10 records
-    count_messages = len(sensor_data_records)
-
+def test_message_limit_response_no_messages(test_client, limit):
     response = test_client.get(f"/messages?limit={limit}")
     data = response.json()
 
-    assert response.status_code == 400
-    assert data["detail"] == (
-        f"Data base has less that {limit} records " f"Current value: {count_messages}"
-    )
+    assert response.status_code == 200
+    assert len(data["messages"]) == 0
 
 
 def test_start(test_client):
@@ -145,6 +149,9 @@ def test_start(test_client):
     data = response.json()
 
     assert data["streaming"] == True  # noqa: E712
+
+
+# add tests for additional endpoints
 
 
 def test_stop(test_client):
