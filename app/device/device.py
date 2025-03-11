@@ -4,29 +4,22 @@ import time
 import numpy as np
 import serial
 
-from app.database.db import get_db
-from app.database.models import DeviceConfig
+from app.database.db_init import init_db
 from app.device.device_config import (
     START_STREAMING_CMD,
     STOP_STREAMING_CMD,
     UPDATE_CONFIG_CMD,
     args,
+    load_config,
 )
+
+init_db()
 
 ser = serial.Serial(args.device_port, baudrate=115200, timeout=2)
 
 # global variables
 streaming = False
 frequency, debug_mode = None, None
-
-
-def load_config():
-    db = next(get_db())
-    parameters = DeviceConfig.get_config(db)
-    return parameters
-
-
-frequency, debug_mode = load_config()
 
 
 # global streaming it will not be moved to handlers.py
@@ -101,5 +94,5 @@ def main():
 
 
 if __name__ == "__main__":
-    load_config()
+    frequency, debug_mode = load_config()
     main()
