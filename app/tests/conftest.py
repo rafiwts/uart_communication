@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.database import Base, get_db
+from app.database.db import Base, get_db
 from app.database.models import DeviceConfig, SensorData
 from app.main import app
 
