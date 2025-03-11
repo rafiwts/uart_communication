@@ -10,13 +10,17 @@ parser.add_argument(
     "--port", type=int, default=int(os.getenv("PORT", 7100)), help="Port number"
 )
 parser.add_argument(
+    "--database", type=str, default=os.getenv("DATABASE_PATH", "app/database.db")
+)
+parser.add_argument(
     "--device", type=str, default=os.getenv("DEVICE", "/tmp/virtual_uart1")
 )
+
 
 args = parser.parse_args()
 
 logging.basicConfig(
-    filename="logs/client.log",
+    filename="logs/app.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )

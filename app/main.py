@@ -5,8 +5,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.client_config import args
-from app.database import engine
-from app.models import Base
+from app.db_init import init_db
 from app.routes import router
 
 app = FastAPI()
@@ -15,7 +14,7 @@ app.include_router(router)
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-Base.metadata.create_all(bind=engine)
+init_db()
 
 if __name__ == "__main__":
     logging.info(f"Starting server on {args.host}:{args.port}")

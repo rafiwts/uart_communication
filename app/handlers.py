@@ -48,14 +48,14 @@ def is_valid_sensor_data(response):
 def handle_config_response(response):
     if response:
         if response.startswith("$2") and "ok" in response:
-            logging.info(f"Received: {response}")
+            logging.info(f"Client received: {response}")
         elif response.startswith("$2") and "invalid" in response:
-            logging.error(f"Received: {response}")
+            logging.error(f"Client received: {response}")
             raise HTTPException(status_code=400, detail="Invalid data")
         else:
             raise HTTPException(status_code=400, detail="Invalid data")
     else:
-        logging.warning("No response received from the device.")
+        logging.warning("Client: No response received from the sensor.")
 
 
 def handle_device_metadata(db):

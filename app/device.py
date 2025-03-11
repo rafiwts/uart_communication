@@ -13,7 +13,7 @@ from app.device_config import (
 )
 from app.models import DeviceConfig
 
-ser = serial.Serial(args.port, baudrate=115200, timeout=2)
+ser = serial.Serial(args.device_port, baudrate=115200, timeout=2)
 
 # global variables
 streaming = False
@@ -36,12 +36,12 @@ def handle_streaming_commands(command: str):
     if command == START_STREAMING_CMD:
         streaming = True
         response = f"{START_STREAMING_CMD},ok\n"
-        logging.info("Started sending data...")
+        logging.info("Sensor: Started sending data...")
 
     elif command == STOP_STREAMING_CMD:
         streaming = False
         response = f"{STOP_STREAMING_CMD},ok\n"
-        logging.info("Stopped sending data.")
+        logging.info("Sensor: Stopped sending data.")
     else:
         response = None
 
@@ -83,7 +83,6 @@ def main():
         try:
             if ser.in_waiting > 0:
                 command = ser.readline().decode().strip()
-                logging.info(f"Received: {command}")
 
                 if command == START_STREAMING_CMD or command == STOP_STREAMING_CMD:
                     handle_streaming_commands(command)
@@ -94,7 +93,7 @@ def main():
 
         # when I press exit from terminal
         except KeyboardInterrupt:
-            logging.info("Shutting down...")
+            logging.info("Sensor sent: Shutting down...")
             break
 
         except Exception as e:

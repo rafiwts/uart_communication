@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-SQLITE_DATABASE_URL = "sqlite:///app/database.db"
+from app.client_config import args
+
+SQLITE_DATABASE_URL = f"sqlite:///{args.database}"
 
 engine = create_engine(
     SQLITE_DATABASE_URL, echo=False, connect_args={"check_same_thread": False}
@@ -18,3 +20,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+# fix database initalization and move everything
+# (bad request - it should work only if there
+# are messages to display, js takes data about
+# frequency from metadata
+# to one place /database folder
+# add bauldrate

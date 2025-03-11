@@ -24,7 +24,6 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    """Render the home page"""
     return templates.TemplateResponse("index.html", {"request": request})
 
 
@@ -69,16 +68,14 @@ async def display_messages(request: Request):
 
 @router.get("/status")
 async def get_status():
-    """Returns whether streaming is running"""
     return {"streaming": serial_handler.streaming}
 
 
 @router.patch("/config", status_code=202)
 async def configure_device(config: ConfigUpdateRequest, db: Session = Depends(get_db)):
-    """Sends config updates to the serial device"""
     message = f"$2,{config.frequency},{config.debug_mode}"
     serial_handler.ser.write(message.encode())
-    logging.info(f"Sent: {message.strip()}")
+    logging.info(f"Client sent: {message.strip()}")
 
     await asyncio.sleep(1)
 
