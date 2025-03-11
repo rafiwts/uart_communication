@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy import func
 
-from app.models import DeviceConfig, SensorData
+from app.database.models import DeviceConfig, SensorData
 
 
 def handle_sensor_parameters(db, response):
@@ -48,9 +48,9 @@ def is_valid_sensor_data(response):
 def handle_config_response(response):
     if response:
         if response.startswith("$2") and "ok" in response:
-            logging.info(f"Client received: {response}")
+            logging.info(f"Sensor: {response}")
         elif response.startswith("$2") and "invalid" in response:
-            logging.error(f"Client received: {response}")
+            logging.error(f"Sensor: {response}")
             raise HTTPException(status_code=400, detail="Invalid data")
         else:
             raise HTTPException(status_code=400, detail="Invalid data")

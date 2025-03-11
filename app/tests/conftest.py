@@ -8,8 +8,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
+from app.database.models import DeviceConfig, SensorData
 from app.main import app
-from app.models import DeviceConfig, SensorData
 
 SQLITE_DATABASE_URL = "sqlite:///./app/tests/test_db.db"
 

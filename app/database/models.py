@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer
 from sqlalchemy.orm import Session
 
-from app.database import Base
+from app.database.db import Base
 
 
 class SensorData(Base):

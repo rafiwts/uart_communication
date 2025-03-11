@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.client_config import args
-from app.db_init import init_db
+from app.database.db_init import init_db
 from app.routes import router
 
 app = FastAPI()

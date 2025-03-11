@@ -7,14 +7,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 
-from app.database import get_db
+from app.database.db import get_db
+from app.database.models import DeviceConfig
+from app.database.schemas import ConfigUpdateRequest
 from app.handlers import (
     handle_config_response,
     handle_device_metadata,
     handle_latest_messages,
 )
-from app.models import DeviceConfig
-from app.schemas import ConfigUpdateRequest
 from app.serial_handler import serial_handler
 
 router = APIRouter()
@@ -75,7 +75,7 @@ async def get_status():
 async def configure_device(config: ConfigUpdateRequest, db: Session = Depends(get_db)):
     message = f"$2,{config.frequency},{config.debug_mode}"
     serial_handler.ser.write(message.encode())
-    logging.info(f"Client sent: {message.strip()}")
+    logging.info(f"Client: {message.strip()}")
 
     await asyncio.sleep(1)
 

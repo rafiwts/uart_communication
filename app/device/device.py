@@ -4,14 +4,14 @@ import time
 import numpy as np
 import serial
 
-from app.database import get_db
-from app.device_config import (
+from app.database.db import get_db
+from app.database.models import DeviceConfig
+from app.device.device_config import (
     START_STREAMING_CMD,
     STOP_STREAMING_CMD,
     UPDATE_CONFIG_CMD,
     args,
 )
-from app.models import DeviceConfig
 
 ser = serial.Serial(args.device_port, baudrate=115200, timeout=2)
 

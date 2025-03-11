@@ -22,7 +22,6 @@ def get_db():
         db.close()
 
 
-# fix database initalization and move everything
 # (bad request - it should work only if there
 # are messages to display, js takes data about
 # frequency from metadata

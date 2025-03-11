@@ -28,11 +28,11 @@ class SerialHandler:
 
                 if is_valid_sensor_data(response):
                     handle_sensor_parameters(db, response)
-                    logging.info(f"Client received: {response}")
+                    logging.info(f"Sensor: {response}")
                     continue
 
                 if response.startswith(("$0", "$1")):
-                    logging.info(f"Client received: {response}")
+                    logging.info(f"Sensor: {response}")
                     continue
 
                 handle_config_response(response)
@@ -44,7 +44,7 @@ class SerialHandler:
         if not self.streaming:
             self.streaming = True
             self.ser.write(b"$0\n")
-            logging.info("Client sent: $0")
+            logging.info("Client: $0")
             asyncio.create_task(self.read_serial_data(db))
             return {"message": "Data streaming started"}
         raise Exception("Data streaming already started")
@@ -53,7 +53,7 @@ class SerialHandler:
         if self.streaming:
             self.streaming = False
             self.ser.write(b"$1\n")
-            logging.info("Client sent: $1")
+            logging.info("Client: $1")
             return {"message": "Data streaming stopped"}
         raise Exception("Data streaming already stopped")
 

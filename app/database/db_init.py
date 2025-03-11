@@ -1,5 +1,6 @@
-from app.database import Base, SessionLocal, engine
-from app.models import DeviceConfig
+from app.database.db import Base, SessionLocal, engine
+
+from .models import DeviceConfig
 
 
 def init_db():
