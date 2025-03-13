@@ -13,9 +13,7 @@ parser.add_argument("--baudrate", type=int, default=int(os.getenv("BAUDRATE", 11
 parser.add_argument(
     "--database", type=str, default=os.getenv("DATABASE_PATH", "database.db")
 )
-parser.add_argument(
-    "--device", type=str, default=os.getenv("DEVICE", "/tmp/virtual_uart1")
-)
+parser.add_argument("--device", type=str, default=os.getenv("DEVICE", "/dev/ttyUSB0"))
 
 
 args = parser.parse_args()

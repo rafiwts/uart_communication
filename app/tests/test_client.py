@@ -151,9 +151,6 @@ def test_start(test_client):
     assert data["streaming"] == True  # noqa: E712
 
 
-# add tests for additional endpoints
-
-
 def test_stop(test_client):
     response = test_client.get("/stop")
     data = response.json()
