@@ -5,10 +5,11 @@ env
 .ruff_cache
 
 # logs
-logs
+*.log
 
 # databases
 *.db
 
 # cache
 __pycache__
+.pytest_cache

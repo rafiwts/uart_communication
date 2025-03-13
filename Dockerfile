@@ -9,8 +9,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN mkdir -p /app/logs
+RUN mkdir -p /app/logs && chmod -R 777 /app/logs
 
-CMD bash -c "socat PTY,link=/tmp/virtual_uart1,raw,echo=0 PTY,link=/tmp/virtual_uart2,raw,echo=0 & \
-    python -m app.device.device & \
-    python -m app.main"
+RUN chmod +x /app/start-app.sh
+ENTRYPOINT ["/app/start-app.sh"]
