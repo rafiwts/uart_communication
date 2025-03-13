@@ -12,8 +12,8 @@ from app.handlers import (
 
 
 class SerialHandler:
-    def __init__(self, device):
-        self.ser = serial.Serial(device, baudrate=115200, timeout=2)
+    def __init__(self, device, baudrate):
+        self.ser = serial.Serial(device, baudrate, timeout=2)
         self.streaming = False
 
     async def read_serial_data(self, db):
@@ -58,4 +58,4 @@ class SerialHandler:
         raise Exception("Data streaming already stopped")
 
 
-serial_handler = SerialHandler(args.device)
+serial_handler = SerialHandler(args.device, args.baudrate)

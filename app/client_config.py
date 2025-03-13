@@ -9,6 +9,7 @@ parser.add_argument(
 parser.add_argument(
     "--port", type=int, default=int(os.getenv("PORT", 7100)), help="Port number"
 )
+parser.add_argument("--baudrate", type=int, default=int(os.getenv("BAUDRATE", 115200)))
 parser.add_argument(
     "--database", type=str, default=os.getenv("DATABASE_PATH", "database.db")
 )

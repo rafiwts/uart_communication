@@ -16,9 +16,7 @@ logging.basicConfig(
 )
 
 parser = argparse.ArgumentParser(description="Embedded Device")
-parser.add_argument(
-    "--device_port", type=str, default=os.getenv("DEVICE_PORT", "/tmp/virtual_uart2")
-)
+parser.add_argument("--baudrate", type=int, default=int(os.getenv("BAUDRATE", 115200)))
 parser.add_argument(
     "--database", type=str, default=os.getenv("DATABASE_PATH", "database.db")
 )

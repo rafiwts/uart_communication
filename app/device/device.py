@@ -15,7 +15,7 @@ from app.device.device_config import (
 
 init_db()
 
-ser = serial.Serial(args.device_port, baudrate=115200, timeout=2)
+ser = serial.Serial("/tmp/virtual_uart2", args.baudrate, timeout=2)
 
 # global variables
 streaming = False
