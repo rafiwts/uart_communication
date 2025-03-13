@@ -32,16 +32,16 @@ Ensure that you have socat installed on your Ubuntu server and that logs folder 
 ```bash
 sudo apt install socat
 
-mdkir logs
+mkdir logs
 ```
 
 ### Step 2: Set Up a Virtual Environment
 Run the following commands to create a virtual environment and activate it:
 
 ```bash
-python3 -m venv env
+python3 -m venv venv
 
-source env/bin/activate
+source venv/bin/activate
 ```
 
 ### Step 3: Install dependencies
@@ -58,18 +58,18 @@ You can start the application using commands that set up a virtual UART device a
 Run a command to simulate the serial communication between the app and device. It will use a default port `/dev/ttyUSB0` if the environment variable is not defined:
 
 ```bash
-socat PTY,link=${DEVICE:-/dev/ttyUSB0},raw,echo=0 PTY,link=/tmp/virtual_uart2,raw,echo=0
+sudo socat PTY,link=${DEVICE:-/dev/ttyUSB0},raw,echo=0 PTY,link=/tmp/virtual_uart2,raw,echo=0
 ```
 As a next step, start the virtual sensor from the root directory that will handle all commands sent from our app.
 
 ```bash
-python -m app.device.device
+sudo python3 -m app.device.device
 ```
 
 At last, start app from the root project directory:
 
 ```bash
-python -m app.main
+python3 -m app.main
 ```
 
 You can access the application providing it the port open for connections. Once you open the website, the GUI should be self-explanatory to use. All client and device logs are stored in `logs/app.log` directory. To track logs, you can run the following command from the project's root directory:
@@ -102,11 +102,11 @@ export DEVICE=/dev/mockport
 and then run commands as in the previous section or you can do it via cli commands:
 
 ```bash
-socat PTY,link=${DEVICE:-/dev/mockport},raw,echo=0 PTY,link=/tmp/virtual_uart2,raw,echo=0
+sudo socat PTY,link=${DEVICE:-/dev/mockport},raw,echo=0 PTY,link=/tmp/virtual_uart2,raw,echo=0
 
-python -m app.device.device --baudrate 50 --database /app/data.db
+sudo python3 -m app.device.device --baudrate 50 --database /app/data.db
 
-python -m app.main --port 8888 ---database /app/data.db --baudrate 50 --device /dev/mockport
+python3 -m app.main --port 8888 ---database /app/data.db --baudrate 50 --device /dev/mockport
 ```
 
 ## Using docker
@@ -143,7 +143,7 @@ After customizing environment variables build an image and run the container as 
 ```bash
 docker build -t clone-app .
 
-docker run --env-file .env -p port:port clone-app
+docker run --env-file .env -p 8888:8888 --name=clone clone-app
 ```
 
 Alternatively, you can pass all environment variables in the command:
@@ -153,11 +153,9 @@ docker run -p 8888:8888 --name clone \
 -e PORT=8888 \
 -e BAUDRATE=50 \
 -e DATABASE_PATH=app/data.db \
-DEVICE=/dev/mockport \
+-e DEVICE=/dev/mockport \
 clone-app
 ```
-
-Note that the `port` should be replaced with port defined in the `.env` file.
 
 ## 1.2.2 Cli parameters:
 
@@ -166,7 +164,13 @@ For parameters passed upon running cli commands the syntax is as follows:
 ```bash
 docker build -t clone-app .
 
-docker run -p 8888:8888 --name clone -e DEVICE=/dev/mockport clone --port 8081 --database app/data.db --baudrate 50 --device /dev/mockport clone-app
+docker run -p 8888:8888 -e DEVICE=/dev/mockport --name clone clone-app --port 8888 --database app/data.db --baudrate 50
 ```
 
-Note that an extra environment variable has to be passed to match `-- device` parameter.
+Note that an extra environment variable has to be passed to match `--device` parameter.
+
+You can run client tests for endpoints with
+
+```bash
+docker exec -it clone pytest
+,,,
